@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>City Explorer</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="./output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-400">
+<div class="tailwind-container mx-auto">
+    <header class="flex justify-center items-center mb-5">
+        <h1 id="main-heading" class="text-3xl/10 text-black">City Explorer</h1>
+    </header>
+
+    <div class="mb-6">
+        <form id="locationForm">
+            <div class="flex gap-2">
+                <input
+                        id="locationInput"
+                        type="text"
+                        placeholder="e.g., Golden Gate Bridge"
+                        class="location-input flex-1 bg-white"
+                >
+                <button type="submit" class="search-button">
+                    <i class="fa-solid fa-search"></i> Search
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results" style="display: none;">
+        <h2 id="locationName" class="text-xl font-medium mb-5"></h2>
+
+
+    </div>
+
+
+
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+<script src="./index.js"></script>
+</body>
+</html>
