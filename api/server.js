@@ -7,8 +7,16 @@ const superagent = require('superagent');
 // Setup Application
 const app = express();
 const port = process.env.PORT || 3000;
+const env = process.env.APP_ENV || 'development';
+let origin = '';
+if (env === 'development') {
+    origin = 'http://localhost:5000';
+} else {
+    origin = 'https://city-explorer-lovat.vercel.app/'
+}
+
 app.use(cors({
-    origin: 'http://localhost:5000',
+    origin: origin,
     methods: ['GET'],
     allowedHeaders: ['Content-Type']
 }));
@@ -151,3 +159,4 @@ const MovieTheater = function (json) {
 
 // App listener
 app.listen(port, () => console.log(`Listening on port ${port}`));
+module.exports = app;

@@ -28,9 +28,14 @@ locationForm.addEventListener('submit', async (event) => {
 
         let apiUrl = '';
         // To-do write an if statement to determine if we are on http or https
-        apiUrl = 'http://localhost:4000/location'
+        if(location.protocol === 'https:') {
+            apiUrl = `${location.origin}/location`;
+        } else{
+            apiUrl = 'http://localhost:4000/location'
+        }
         apiUrl += `?${params}`;
         const myApiResponse = await fetch(apiUrl);
+
         if(myApiResponse.status !== 200) {
             throw new Error(myApiResponse.statusText);
         }
