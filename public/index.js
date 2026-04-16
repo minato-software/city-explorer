@@ -154,25 +154,6 @@ locationForm.addEventListener('submit', async (event) => {
             //Display "no movie theaters found" or "failed to retrieve movie theaters"
         }
 
-        // const movieTheaterSectionEl = document.getElementById('movieTheaterSection');
-        // const theatersArr = data.movieTheaterData;
-        // if(theatersArr.length > 0) {
-        //     theatersArr.forEach(theater => {
-        //         //const {cinema_name, address, address2, city, state, postcode} = theater;
-        //         const movieCard = `
-        //         <div class='bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition transform hover:-translate-y-1'>
-        //                 <div class="p-4">
-        //                     <h4 class="font-semibold mb-2">${theater.cinema_name}</h4>
-        //                     <p class="text-sm text-gray-600 mb-1">${theater.address || ''}</p>
-        //                     <p class="text-sm text-gray-600 mb-1">${theater.address2 || ''}</p>
-        //                     <p class="text-sm text-gray-600 mb-1">${theater.city || ''}, ${theater.state || ''} ${theater.zip || ''}</p>
-        //                     ${theater.url ? `<a href="${theater.url}" target="_blank" class="inline-block mt-2 text-gray-800 font-medium hover:underline">Visit Website</a>` : ''}
-        //                 </div>
-        //         </div>
-        //         `;
-        //         movieTheaterSectionEl.insertAdjacentHTML('beforeend', movieCard);
-        //     });
-        // }
 
     } catch(error) {
         // Display a message when something goes wrong
