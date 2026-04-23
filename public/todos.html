@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Todos App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="./output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-400">
+<div class="tailwind-container mx-auto">
+    <header class="flex justify-center items-center mb-5">
+        <h1 id="main-heading" class="text-3xl/10 text-black">Todo List</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">City Explorer</a></li>
+            <li><a href="todos.html" class="active">Todo List</a> </li>
+        </ul>
+    </nav>
+
+    <form id="item-form">
+        <div class="form-control">
+            <input
+                    type="text"
+                    class="form-input"
+                    id="item-input"
+                    name="item"
+                    placeholder="Enter Item"
+            />
+        </div>
+        <div class="form-control">
+            <button type="submit" class="btn">
+                <i class="fa-solid fa-plus"></i> Add Todo
+            </button>
+        </div>
+    </form>
+
+    <div class="filter">
+        <input
+                type="text"
+                class="form-input-filter"
+                id="filter"
+                placeholder="Filter Items"
+        />
+    </div>
+
+    <ul id="item-list" class="items">
+        <!--        <li>-->
+        <!--          Apples-->
+        <!--          <button class="remove-item btn-link text-red">-->
+        <!--            <i class="fa-solid fa-xmark"></i>-->
+        <!--          </button>-->
+        <!--        </li>-->
+        <!--        <li>-->
+        <!--          Orange Juice-->
+        <!--          <button class="remove-item btn-link text-red">-->
+        <!--            <i class="fa-solid fa-xmark"></i>-->
+        <!--          </button>-->
+        <!--        </li>-->
+        <!--        <li>-->
+        <!--          Oreos-->
+        <!--          <button class="remove-item btn-link text-red">-->
+        <!--            <i class="fa-solid fa-xmark"></i>-->
+        <!--          </button>-->
+        <!--        </li>-->
+        <!--        <li>-->
+        <!--          Milk-->
+        <!--          <button class="remove-item btn-link text-red">-->
+        <!--            <i class="fa-solid fa-xmark"></i>-->
+        <!--          </button>-->
+        <!--        </li>-->
+    </ul>
+
+    <button id="clear" type="button" class="btn-clear">Clear All</button>
+</div>
+<!--<div id="spinner-container">-->
+<!--    <div class="spinner">-->
+<!--        <i class="fa fa-spin fa-spinner"></i> Loading...-->
+<!--    </div>-->
+<!--</div>-->
+
+<script src="./todos.js"></script>
+</body>
+</html>

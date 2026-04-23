@@ -3,10 +3,13 @@ const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
 const superagent = require('superagent');
+const {connectAll} = require('../config/db');
+connectAll(); // Initialize the database
+
 
 // Setup Application
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 const env = process.env.APP_ENV || 'development';
 let origin = '';
 if (env === 'development') {
@@ -21,10 +24,38 @@ app.use(cors({
     allowedHeaders: ['Content-Type']
 }));
 
+// Body parser middleware = Needed to get JSON data from the frontend
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 // Route definitions
 app.use(express.static('./public'));
-app.get('/location', locationHandler);
+const todosRouter = require('../routes/todos');
+app.use("/api/todos", todosRouter);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.get('/location', locationHandler); //will need a moviehandler with a get request
+
+
+
+// COPY THIS FOR MOVIE SEARCH THANG  localhost:4000/movies?search=mario should return movie json objects
+//VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
 async function locationHandler(req, res) {
     try {
         const search = req.query.search;
@@ -156,6 +187,13 @@ const MovieTheater = function (json) {
     this.state = json.state;
     this.postcode = json.postcode;
 }
+
+// const Movie = function (json) {
+//     title
+//     posterpath
+//     releasedate
+//     describe
+// }
 
 // App listener
 app.listen(port, () => console.log(`Listening on port ${port}`));
