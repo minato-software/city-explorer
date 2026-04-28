@@ -34,9 +34,40 @@ const todosRouter = require('../routes/todos');
 app.use("/api/todos", todosRouter);
 
 app.get('/location', locationHandler); //will need a moviehandler with a get request
+app.get('/movies', movieHandler);
 
 // COPY THIS FOR MOVIE SEARCH THANG  localhost:4000/movies?search=mario should return movie json objects
 //VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+
+async function movieHandler(req, res) {
+    console.log(req.query.search, 'this is the search query')
+    try {
+        const search = req.query.search;
+
+        if (search === null || search === undefined || search === '') {
+            res.status(400).send('Movie title is required. Please enter a valid search query.');
+            return;
+        }
+        const responseObj = {};
+
+        let url = 'https://api.themoviedb.org/3/search/movie?';
+        const movieDBResponse = await superagent.get(url).query({
+            query: search
+        }).set('accept', 'application/json')
+            .set('Authorization', `Bearer ${process.env.OMDB_READ_ACCESS_TOKEN}`);
+        if (!movieDBResponse.body || movieDBResponse.body.results.length === 0) {
+            throw new Error('No movie data found');
+        }
+
+        const moviesArr = movieDBResponse.body.results.map(movie => new Movie(movie));
+        responseObj.movies = moviesArr;
+        res.status(200).send(responseObj);
+
+    } catch (error) {
+        console.error('Error in movieHandler:', error.message);
+        res.status(500).send('Something went wrong!');
+    }
+}
 async function locationHandler(req, res) {
     try {
         const search = req.query.search;
@@ -124,10 +155,17 @@ async function locationHandler(req, res) {
         console.error('Error in locationHandler:', error.message);
         res.status(500).send('Something went wrong!');
     }
-
 }
 
 // Constructors
+function Movie(json) {
+    this.id = json.id;
+    this.title = json.title;
+    this.overview = json.overview;
+    this.poster_path = json.poster_path;
+    this.release_date = json.release_date;
+}
+
 function Location(searchQuery, location) {
     this.searchQuery = searchQuery; // This is what the user searched for
     this.formattedQuery = location.display_name; // This is from LocationIQ
