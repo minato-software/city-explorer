@@ -33,26 +33,7 @@ app.use(express.static('./public'));
 const todosRouter = require('../routes/todos');
 app.use("/api/todos", todosRouter);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.get('/location', locationHandler); //will need a moviehandler with a get request
-
-
 
 // COPY THIS FOR MOVIE SEARCH THANG  localhost:4000/movies?search=mario should return movie json objects
 //VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
@@ -72,38 +53,53 @@ async function locationHandler(req, res) {
             q: search,
             format: "json"
         });
+        
+        if (!locationIQResponse.body || locationIQResponse.body.length === 0) {
+            throw new Error('No location data found');
+        }
+
         const locationJson = locationIQResponse.body[0];
         const myLocation = new Location(search, locationJson);
-
         responseObj.locationData = myLocation;
-        //TO-do verify location exists, stop if location data is invalid
 
+        // Yelp API Call
         url = 'https://api.yelp.com/v3/businesses/search';
-        const yelpResponse = await superagent.get(url).query({
-            latitude: myLocation.latitude,
-            longitude: myLocation.longitude,
-            limit: 12,
-            sort_by: 'distance',
-            term: 'restaurants'
-        }).set('Authorization', `Bearer ${process.env.YELP_KEY}`);
+        let restaurantArr = [];
+        try {
+            const yelpResponse = await superagent.get(url).query({
+                latitude: myLocation.latitude,
+                longitude: myLocation.longitude,
+                limit: 12,
+                sort_by: 'distance',
+                term: 'restaurants'
+            }).set('Authorization', `Bearer ${process.env.YELP_KEY}`);
 
-        const restaurantArr = yelpResponse.body.businesses.map(restaurant => new Restaurant(restaurant));
+            restaurantArr = yelpResponse.body.businesses.map(restaurant => new Restaurant(restaurant));
+        } catch(error) {
+            console.error('Yelp API Error:', error.message);
+        }
         responseObj.restaurantData = restaurantArr;
 
+        // OpenWeather API Call
         url = 'https://api.openweathermap.org/data/2.5/weather';
-        const openWeatherResponse = await superagent.get(url)
-            .query({
-                lat: myLocation.latitude,
-                lon: myLocation.longitude,
-                appid: process.env.OPENWEATHER_KEY,
-                units: 'imperial', // Will return fahrenheit
-            });
+        let myWeather = null;
+        try {
+            const openWeatherResponse = await superagent.get(url)
+                .query({
+                    lat: myLocation.latitude,
+                    lon: myLocation.longitude,
+                    appid: process.env.OPENWEATHER_KEY,
+                    units: 'imperial', // Will return fahrenheit
+                });
 
-        const weatherJson = openWeatherResponse.body;
-        const myWeather = new Weather(weatherJson);
+            const weatherJson = openWeatherResponse.body;
+            myWeather = new Weather(weatherJson);
+        } catch(error) {
+            console.error('OpenWeather API Error:', error.message);
+        }
         responseObj.weatherData = myWeather;
 
-
+        // MovieGlu API Call
         url = 'https://api-gate2.movieglu.com/cinemasNearby/?n=5';
         let movieTheaterArr = [];
         try {
@@ -117,17 +113,15 @@ async function locationHandler(req, res) {
                 .set('geolocation', `${myLocation.latitude};${myLocation.longitude}`);
 
             movieTheaterArr = movieGluResponse.body.cinemas.map(cinema => new MovieTheater(cinema));
-
         } catch(error) {
-
+            console.error('MovieGlu API Error:', error.message);
         }
         responseObj.movieTheaterData = movieTheaterArr;
-
 
         res.status(200).send(responseObj);
 
     } catch (error) {
-        console.log(error);
+        console.error('Error in locationHandler:', error.message);
         res.status(500).send('Something went wrong!');
     }
 
@@ -187,13 +181,6 @@ const MovieTheater = function (json) {
     this.state = json.state;
     this.postcode = json.postcode;
 }
-
-// const Movie = function (json) {
-//     title
-//     posterpath
-//     releasedate
-//     describe
-// }
 
 // App listener
 app.listen(port, () => console.log(`Listening on port ${port}`));

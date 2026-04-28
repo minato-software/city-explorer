@@ -1,14 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const Todos = require('../models/Todos');
-const app = require("../api/server");
+
+// Middleware to parse JSON request bodies
+router.use(express.json());
 
 // Get all todos
-router.get('/', async (req, res) => {
-    // Call the find function from a Todos model
-    const todos = await Todos.find();
-    // Response with the json data
+router.get('/', async(req, res) => {
     try {
+        // Call the find function from a Todos model
+        const todos = await Todos.find();
+        // Response with the json data
         res.status(200).json({data: todos});
     } catch(err) {
         console.error(err);
@@ -17,7 +19,7 @@ router.get('/', async (req, res) => {
 })
 
 // Add a new todo
-router.post('/', async (req, res) => {
+router.post('/', async(req, res) => {
     const title = req.body.title;
     const completed = false;
     if(title) {
@@ -33,26 +35,25 @@ router.post('/', async (req, res) => {
 });
 
 // Update a todo
-router.put('/:id', async (req, res) => {
-   const id = req.params.id;
-   if(!isValidId(id)) {
-       console.error('Invalid ID format:', id);
-       return res.status(400).send('Invalid ID format');
-   }
-   const todo = {
-       "title": req.body.title,
-       "completed": false,
-   };
-   const updatedTodo = await Todos.findByIdAndUpdate(id,{$set: todo}, {new: true});
-   if(!updatedTodo) {
-       return res.status(404).json({success: false, message: 'That todo could not be found'});
-   }
-   res.json({success: true, data: updatedTodo});
+router.put('/:id', async(req, res) => {
+    const id = req.params.id;
+    if(!isValidId(id)) {
+        console.error('Invalid ID format:', id);
+        return res.status(400).send('Invalid ID format');
+    }
+    const todo = {
+        "title": req.body.title,
+        "completed": false
+    };
+    const updatedTodo = await Todos.findByIdAndUpdate(id, {$set: todo}, {new: true});
+    if(!updatedTodo) {
+        return res.status(404).json({success: false, message: 'That todo could not be found'});
+    }
+    res.json({success: true, data: updatedTodo});
 });
 
-
 // Delete a todo
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async(req, res) => {
     const id = req.params.id;
     if(!isValidId(id)) {
         console.error('Invalid ID format:', id);
@@ -63,11 +64,9 @@ router.delete('/:id', async (req, res) => {
         return res.status(404).json({success: false, message: 'That todo could not be found'});
     }
     res.json({success: true, data: deletedTodo});
-});
-
-
+})
 // Delete all todos
-router.delete('', async (req, res) => {
+router.delete('', async(req, res) => {
     const result = await Todos.deleteMany({});
     return res.json({
         success: true,
@@ -75,7 +74,7 @@ router.delete('', async (req, res) => {
         data: { deletedCount: result.deletedCount }
     });
 })
-//isValidID function
+
 function isValidId(id) {
     if (
         (typeof id === 'string' && /^[a-fA-F0-9]{24}$/.test(id)) ||  // 24-char hex string
@@ -86,4 +85,5 @@ function isValidId(id) {
     }
     return false;
 }
+
 module.exports = router;

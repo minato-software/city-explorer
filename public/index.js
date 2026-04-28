@@ -116,19 +116,27 @@ locationForm.addEventListener('submit', async (event) => {
         const feelsLikeEl = document.getElementById('feelsLike');
         const humidityEl = document.getElementById('humidity');
         const windSpeedEl = document.getElementById('windSpeed');
-        const {weatherName, weather, current_temp, feels_like, temp_min, temp_max, humidity, wind_speed, wind_direction, cloud_percentage} = data.weatherData;
-        weatherDescEl.textContent = weather;
-        currentTempEl.textContent = current_temp;
-        feelsLikeEl.textContent = feels_like;
-        humidityEl.textContent = humidity;
-        windSpeedEl.textContent = wind_speed;
+        
+        if (data.weatherData) {
+            const {weather, current_temp, feels_like, humidity, wind_speed} = data.weatherData;
+            weatherDescEl.textContent = weather;
+            currentTempEl.textContent = current_temp;
+            feelsLikeEl.textContent = feels_like;
+            humidityEl.textContent = humidity;
+            windSpeedEl.textContent = wind_speed;
+        } else {
+            weatherDescEl.textContent = 'N/A';
+            currentTempEl.textContent = 'N/A';
+            feelsLikeEl.textContent = 'N/A';
+            humidityEl.textContent = 'N/A';
+            windSpeedEl.textContent = 'N/A';
+        }
 
         // Display Restaurant Data
         const restaurantsSectionEl = document.getElementById('restaurantsSection');
         const restaurantsArr = data.restaurantData;
-        if(restaurantsArr.length > 0) {
+        if(restaurantsArr && restaurantsArr.length > 0) {
             restaurantsArr.forEach(restaurant => {
-                //const {name, rating, image_url, price, url, phone, categories, address, city, state, zip} = restaurant;
                 const restaurantCard = `
                     <div class='bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition transform hover:-translate-y-1'>
                         <img src="${restaurant.image_url || 'https://placehold.co/600x400?text=No+Image'}" alt="${restaurant.name}" class="w-full h-36 object-cover">
@@ -144,14 +152,26 @@ locationForm.addEventListener('submit', async (event) => {
                 `;
                 restaurantsSectionEl.insertAdjacentHTML('beforeend', restaurantCard);
             });
+        } else {
+            restaurantsSectionEl.innerHTML = '<p class="col-span-full text-gray-500">No restaurants found or service unavailable.</p>';
         }
 
         // Display Movie Theater Data
+        const movieTheaterSectionEl = document.getElementById('movieTheaterSection');
         const movieTheaterArr = data.movieTheaterData;
         if(movieTheaterArr && movieTheaterArr.length > 0) {
-            // Display the movie theaters
+            movieTheaterArr.forEach(theater => {
+                const theaterCard = `
+                    <div class='bg-white rounded-lg shadow p-4 hover:shadow-md transition transform hover:-translate-y-1'>
+                        <h4 class="font-semibold mb-2">${theater.cinema_name}</h4>
+                        <p class="text-sm text-gray-600">${theater.address || ''}</p>
+                        <p class="text-sm text-gray-600">${theater.city || ''}, ${theater.state || ''} ${theater.postcode || ''}</p>
+                    </div>
+                `;
+                movieTheaterSectionEl.insertAdjacentHTML('beforeend', theaterCard);
+            });
         } else {
-            //Display "no movie theaters found" or "failed to retrieve movie theaters"
+            movieTheaterSectionEl.innerHTML = '<p class="col-span-full text-gray-500">No movie theaters found or service unavailable.</p>';
         }
 
 
